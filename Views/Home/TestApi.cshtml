@@ -1,0 +1,99 @@
+﻿@{
+    ViewBag.Title = "TestApi";
+}
+
+<div​>
+    <h3>Data Fetching in JavaScript</h3>
+
+    <button id="getButton1">GET Data 1 - LIST</button>
+    <button id="postButton1">POST Data 1</button>
+
+    <button id="postButton2">POST Data 2</button>
+
+    <button id="putButton1">PUT Data - (Update)</button>
+    <div id="dataDiv">Msg area...</div>
+</div​>
+
+@section scripts {
+    <script>
+        // adding event listeners to the buttons
+        getButton1.addEventListener("click", () => {
+            const apiUrl = 'http://cpnsport.net/api/course';
+
+            // Make a GET request using the Fetch API
+            fetch(apiUrl)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(userData => {
+                    // Process the retrieved user data
+                    console.log('List Data:', userData);
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+
+
+        });
+
+        //POST1
+        postButton1.addEventListener("click", () => {
+            const apiUrl = "http://cpnsport.net/api/course";
+            var Parameters = {
+                CourseTypeId: "1",
+                CourseName: "TEST TEST from js10",
+                HourAmount: "10"
+            };
+            
+            var data = new FormData();
+            data.append("json", JSON.stringify(apiUrl));
+            fetch(buildUrl(apiUrl, Parameters),
+                {
+                    method: "POST",
+                    body: data
+                })
+                .then(function (res) { return res.json(); })
+                .then(function (data) { alert(JSON.stringify(data)) })
+
+        });
+        //POST2
+        postButton2.addEventListener("click", () => {
+            const apiUrl = 'http://cpnsport.net/api/course';
+            var payload = {};            
+            var data = new FormData();
+            data.append("json", JSON.stringify(payload));
+            fetch(apiUrl,
+                {
+                    method: "POST",
+                    body: data
+                })
+                .then(function (res)
+                    {
+                        return res.json();
+                    })
+                .then(function (data)
+                {
+                    alert(JSON.stringify(data))
+                })
+
+        });
+
+        function buildUrl(url, parameters) {
+            var qs = "";
+            for (var key in parameters) {
+                var value = parameters[key];
+                qs += encodeURIComponent(key) + "=" + encodeURIComponent(value) + "&";
+            }
+            if (qs.length > 0) {
+                qs = qs.substring(0, qs.length - 1); //chop off last "&"
+                url = url + "?" + qs;
+            }
+            return url;
+        }
+
+    </script>
+}
+
